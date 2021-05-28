@@ -1,0 +1,51 @@
+/* PatternFly more-additions to Bootstrap */
+
+.navbar-pf-vertical.container-pf-nav-pf-vertical {
+	top: inherit;
+	background-color: #fff;
+}
+
+.list-group-item {
+  align-items: start;
+}
+
+.list-group-item:last-child {
+	border-bottom: 0;
+	margin-bottom: -5px;
+}
+
+.list-view-pf-main-info {
+	align-items: inherit;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.list-view-pf-main-info-header {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+  
+.list-view-pf-left {
+	text-align: inherit;
+}
+.list-view-pf-body {
+    align-items: inherit;
+}
+	
+.list-view-pf-description {
+	align-items: inherit;
+}
+
+.list-view-pf-additional-info {
+	flex: 0 0 auto;
+	align-items: inherit;
+	width: auto;
+}
+
+.list-view-pf-additional-info-item {
+	align-items: inherit;
+}
+
+.list-group-item-container {
+	padding: 0px;
+}
