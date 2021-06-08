@@ -8,7 +8,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         
-		<title>Windup Rule Explorer</title>        
+		<title>Windup Rulesets Explorer</title>        
 		<meta name="description" content="Windup Rule Explorer" />
         
 		<link rel="shortcut icon" href="v3/assets/img/windup.png" />
@@ -51,7 +51,7 @@
                 </button>
                 <a href="/" class="navbar-brand">
                     <!--<img class="navbar-brand-icon" src="v3/assets/img/windup.png" alt=""/>-->
-                    <h5><div class="navbar-brand-name">Windup Rule Explorer</div></h5>
+                    <h5><div class="navbar-brand-name">Windup Rulesets Explorer</div></h5>
                 </a>
             </div>
         </nav>
@@ -62,27 +62,24 @@
         </div>
 
         <div class="container-fluid navbar-pf-vertical container-pf-nav-pf-vertical">
-            <div class="row toolbar-pf">
-                <div class="col-sm-12">
-                    <form class="row toolbar-pf-actions">
-                        <div id="stack" class="form-group"></div>
-						<div id="source-tech" class="form-group"></div>
-                        
-						<!-- TODO : Fix bug -->
-						<div class="form-group">
-							<ul class="dropdown-menu">
-								<li><a href="#">dummy</a></li>
-							</ul>
-                        </div>
-						
-						<div id="target-tech" class="form-group"></div>
-                    </form>
-                    <!-- /row -->
-                </div>
-                <!-- /col -->
+            <div class="toolbar-pf">
+				<form class="row toolbar-pf-actions">
+					<div id="stack" class="col-xs-2 form-group"></div>
+					<div id="source-tech" class="col-xs-3 form-group"></div>
+					
+					<!-- TODO : Fix bug -->
+					<div class="form-group">
+						<ul class="dropdown-menu">
+							<li><a href="#">dummy</a></li>
+						</ul>
+					</div>
+					
+					<div id="target-tech" class="col-xs-3 form-group"></div>
+				</form>
+				<!-- /row -->
             </div>
             <!-- /row -->
-			<div class="list-view-pf-main-info list-view-pf-main-info-header">
+			<div class="list-view-pf-main-info">
 				<div class="col-xs-2 list-group-item-heading">Phase</div>
 				<div class="col-xs-3 list-group-item-heading">Ruleset</div>
 				<div class="col-xs-6 list-group-item-heading">Description</div>
@@ -135,22 +132,15 @@
 				<span class="fa fa-angle-right"></span>
 			</div>-->
 			<div class="list-view-pf-main-info">
-				<div class="col-xs-2 list-view-pf-left">Phase</div>
 				<div class="list-view-pf-body">
-					<div class="list-view-pf-description">
-						<a href="#" class="col-xs-4"><div class="list-group-item-heading" onclick="openLink()">Name</div></a>
-						<div class="col-xs-8 list-group-item-text">Description</div>
-					</div>					
+					<div class="col-xs-2 col-xs-2 list-view-pf-left">Phase</div>
+					<a target="ruleset" href="" class="col-xs-3 list-group-item-heading">Name</a>
+					<div class="col-xs-6 list-group-item-text">Description</div>
+					<div class="col-xs-1 list-view-pf-additional-info-item"># Rules</div>
 				</div>
 			</div>
 		</template>
-		
-		<template id="template-additional-info">
-			<div class="col-xs-2 list-view-pf-additional-info">
-				<div class="list-view-pf-additional-info-item">Rules</div>
-			</div>
-		</template>
-		
+				
 		<template id="template-dropdown">
 			<div class="dropdown btn-group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -159,208 +149,15 @@
 				<ul class="dropdown-menu"></ul>
 			</div>
 		</template>
+		
+		<template id="template-select">
+			<label></label>
+			<select class="form-select">
+				<option selected></option>
+			</select>
+		</template>
 		<!-- /Template -->
 		
-		<script>
-			
-			$(document).ready(function () {
-				// expand all child rows
-				$("#expand-tree").on("click", function () {
-					$(".tree-list-view-pf")
-						.find(".list-group-item-container")
-						.filter(function () {
-							return $(this).children().length > 0;
-						})
-						.removeClass("hidden");
-				});
-
-				// collapse all child rows
-				$("#collapse-tree").on("click", function () {
-					$(".tree-list-view-pf").find(".list-group-item-container").addClass("hidden");
-				});
-
-				// row checkbox selection
-				$(".tree-list-view-pf").on("change", ":checkbox", function (e) {
-					if ($(this).is(":checked")) {
-						$(this).closest(".list-group-item").addClass("active");
-					} else {
-						$(this).closest(".list-group-item").removeClass("active");
-					}
-				});
-
-				// toggle dropdown menu
-				$(".list-view-pf-actions").on("show.bs.dropdown", function () {
-					var $this = $(this);
-					var $dropdown = $this.find(".dropdown");
-					var space = $(window).height() - $dropdown[0].getBoundingClientRect().top - $this.find(".dropdown-menu").outerHeight(true);
-					$dropdown.toggleClass("dropup", space < 10);
-				});
-
-				// click the list-view heading then expand a row
-				$(".list-group-item-header").click(function (event) {
-					if (!$(event.target).is("button, a, input, .fa-ellipsis-v")) {
-						var $this = $(this);
-						$this.find(".fa-angle-right").toggleClass("fa-angle-down");
-						var $itemContainer = $this.siblings(".list-group-item-container");
-						if ($itemContainer.children().length) {
-							$itemContainer.toggleClass("hidden");
-						}
-					}
-				});
-			});
-
-            $(document).ready(function () {
-                // matchHeight the contents of each .card-pf and then the .card-pf itself
-                $(".row-cards-pf > [class*='col'] > .card-pf .card-pf-title").matchHeight();
-                $(".row-cards-pf > [class*='col'] > .card-pf > .card-pf-body").matchHeight();
-                $(".row-cards-pf > [class*='col'] > .card-pf > .card-pf-footer").matchHeight();
-                $(".row-cards-pf > [class*='col'] > .card-pf").matchHeight();
-
-                // Initialize the vertical navigation
-                $().setupVerticalNavigation(true);
-            });
-			
-			function cloneTemplate(templateSelector){
-				return document.querySelector(templateSelector).content.cloneNode(true);
-			}
-			
-			// nav
-			var goals = [
-							{ legend : "cloud", name : "Cloud Readiness" },
-							{ legend : "code", name : "Open Source" },
-							{ legend : "refresh", name : "Modernize" },
-							{ legend : "window-restore", name : "Upgrade" }
-						];
-			
-			for(var goalIndx in goals) {
-				var navItem = cloneTemplate('#template-nav-item');
-				var goal = goals[goalIndx]
-				navItem.querySelector('.fa').classList.add('fa-' + goal.legend);
-				navItem.querySelector('.list-group-item-value').innerText = goal.name;
-				$('.nav-pf-vertical .list-group').append(navItem);
-			}
-			
-			$('.nav-pf-vertical .list-group .list-group-item:first').addClass('active');
-			
-			// filters
-					
-			function createDropdown(label) {
-				var dropdown = $(cloneTemplate('#template-dropdown'));
-				dropdown.find('button').prepend(label);
-				return dropdown;
-			}
-			
-			function populateDropdown(dropdown, items) {
-				var dropdownMenu = dropdown.find('.dropdown-menu');
-				for(var index in items) {
-					var dropDownItem = $('<li><a href="#">'+items[index]+'</a></li>');
-					dropdownMenu.append(dropDownItem);
-				}
-			}
-			
-			
-			var dropdown = createDropdown('Stack');
-			var stacks = ['Java', '.Net'];
-			populateDropdown(dropdown, stacks);
-			$('#stack').append(dropdown);
-			
-			var dropdown = createDropdown('Source Technology');
-			var targetTechs = ['Apache Camel', 'Thorntail', 'jBPM', 'Drools', 'Seam', 'Hibernate', 'Spring Boot', 'Weblogic', 'WebSphere', 'Glassfish',  'Oracle JDK'];
-			populateDropdown(dropdown, targetTechs);
-			$('#source-tech').append(dropdown);
-			
-			var dropdown = createDropdown('Target Technology');
-			var targetTechs = ['Fuse', 'Quarkus', 'KIE', 'Hibernate', 'JEE', 'Open JDK'];
-			populateDropdown(dropdown, targetTechs);
-			$('#target-tech').append(dropdown);
-			
-			// list 
-			var ruleSets = [{
-				phase : 'Initial Analysis',
-				name : 'embedded-cache-libraries',
-				desc : 'This ruleset detects embedded cache libraries.',
-				ruleCount : 14
-			},{
-				phase : 'Migration',
-				name : 'java-rmi',
-				desc : 'This ruleset detects the Java Remote Method Invocation (RMI)',
-				ruleCount : 2
-			},{
-				phase : 'Migration',
-				name : 'java-rpc',
-				desc : 'This ruleset detects the Java Remote Procedure Call (RPC)',
-				ruleCount : 1
-			},{
-				phase : 'Migration',
-				name : 'java-jca',
-				desc : 'This ruleset detects the Java Connector Architecture (JCA)',
-				ruleCount : 1
-			},{
-				phase : 'Migration',
-				name : 'jni-native-code',
-				desc : 'This ruleset detects Java Native Interface (JNI) and Java Native Access (JNA) code',
-				ruleCount : 1
-			},{
-				phase : 'Migration',
-				name : 'local-storage',
-				desc : 'This ruleset detects local storage usage',
-				ruleCount : 5
-			},{
-				phase : 'Migration',
-				name : 'logging',
-				desc : 'This ruleset detects logging configurations',
-				ruleCount : 2
-			},{
-				phase : 'Migration',
-				name : 'java-mail',
-				desc : 'This ruleset detects the Java Mail API',
-				ruleCount : 1
-			},{
-				phase : 'Migration',
-				name : 'session',
-				desc : 'This ruleset detects data storage in HTTP session objects',
-				ruleCount : 2
-			},{
-				phase : 'Migration',
-				name : 'socket-communication',
-				desc : 'This ruleset detects the use of socket communication by the client or server',
-				ruleCount : 2
-			}];
-			
-			function createItem(ruleSet) {
-				var itemHeader = $(cloneTemplate('#template-item-header'));
-				itemHeader.find('.list-view-pf-left').text(ruleSet.phase);
-				
-				var itemHeaderBody = itemHeader.find('.list-view-pf-body');
-				itemHeaderBody.find('.list-group-item-heading').text(ruleSet.name);
-				itemHeaderBody.find('.list-group-item-text').text(ruleSet.desc);
-
-				var addInfo = $(cloneTemplate('#template-additional-info'));
-				addInfo.find('.list-view-pf-additional-info-item').text(ruleSet.ruleCount);
-				itemHeaderBody.append(addInfo);
-				
-				var item = $('<div class="list-group-item"></div>')
-				var itemBody = $('<div class="list-group-item-header"></div>')
-				itemBody.append(itemHeader);
-				item.append(itemBody);
-				
-				$('.container-pf-nav-pf-vertical .list-group').append(item);
-			}
-			
-			for(var ruleSetIndx in ruleSets){
-				var ruleSet = ruleSets[ruleSetIndx];
-				createItem(ruleSet);
-			}
-			
-			
-			
-			function openLink(){
-				window.open('https://github.com/windup-experiments/windup-rulesets/blob/master/rules-reviewed/openshift/'+event.target.innerText+'.windup.xml','ruleset');
-			}
-			
-			//$('.list-group-item-container .list-group-item-header').append(cloneTemplate('#template-item-header'));
-			//$('.list-group-item-container .list-group-item-header .list-view-pf-body').append(cloneTemplate('#template-additional-info'));
-
-        </script>
+		<script src="index.js"></script>
     </body>
 </html>
