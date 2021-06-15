@@ -66,24 +66,21 @@ function getTextContent(dom, selector) {
 	return node ? node.textContent : undefined;
 }
 
-// navigation
+// goals
 
-var goals = [
-	{ legend : "cloud", name : "Cloud Readiness" },
-	{ legend : "code", name : "Open Source" },
-	{ legend : "refresh", name : "Modernize" },
-	{ legend : "window-restore", name : "Upgrade" }
-];
-
-for(var goalIndx in goals) {
-	var navItem = cloneTemplate('#template-nav-item');
-	var goal = goals[goalIndx]
-	navItem.querySelector('.fa').classList.add('fa-' + goal.legend);
-	navItem.querySelector('.list-group-item-value').innerText = goal.name;
-	$('.nav-pf-vertical .list-group').append(navItem);
+function populateGoals(goals) {
+	for(var goalIndx in goals) {
+		var navItem = cloneTemplate('#template-nav-item');
+		var goal = goals[goalIndx]
+		navItem.querySelector('li').id = goal.id;
+		navItem.querySelector('.fa').classList.add('fa-' + goal.legend);
+		navItem.querySelector('.list-group-item-value').innerText = goal.name;
+		$('.nav-pf-vertical .list-group').append(navItem);
+	}
 }
-
-$('.nav-pf-vertical .list-group .list-group-item:first').addClass('active');
+$('.nav-pf-vertical .list-group .list-group-item').on('click', function(){
+	changeGoal(this.id);
+});
 
 // filters
 
@@ -94,26 +91,12 @@ function createSelect(label) {
 }
 
 function populateSelect(select, options) {
+	select = select.find('select');
 	for(var index in options) {
 		var selectOption = $('<option value="'+options[index]+'">'+options[index]+'</option>');
-		select.find('select').append(selectOption);
+		select.append(selectOption);
 	}
 }
-
-var stacks = ['Java', '.Net'];			
-var select = createSelect('Stack');
-populateSelect(select, stacks);
-$('#stack').append(select);
-
-var targetTechs = ['Apache Camel', 'Thorntail', 'jBPM', 'Drools', 'Seam', 'Hibernate', 'Spring Boot', 'Weblogic', 'WebSphere', 'Glassfish',  'Oracle JDK'];
-var select = createSelect('Source Technology');
-populateSelect(select, targetTechs);
-$('#source-tech').append(select);
-
-var targetTechs = ['Fuse', 'Quarkus', 'KIE', 'Hibernate', 'JEE', 'Open JDK'];
-var select = createSelect('Target Technology');
-populateSelect(select, targetTechs);
-$('#target-tech').append(select);
 
 // actions
 		
@@ -148,53 +131,7 @@ populateDropdown(dropdown, targetTechs);
 $('#target-tech').append(dropdown);
 */
 
-// list 
-var ruleSetsInfo_cloud_java = {
-	path : 'openshift',
-	ruleSets : [
-		{ name : 'embedded-cache-libraries' },
-		{ name : 'java-rmi' },
-		{ name : 'java-rpc' },
-		{ name : 'jca' },
-		{ name : 'jni-native-code' },
-		{ name : 'local-storage' },
-		{ name : 'logging' },
-		{ name : 'mail' },
-		{ name : 'session' },
-		{ name : 'socket-communication' }
-	]
-};
-
-var ruleSetsInfo_cloud_dotnet = {
-	path : 'openshift/dotnet',
-	ruleSets : [
-		{ name : 'console' },
-		{ name : 'database-access' },
-		{ name : 'db2-unmanaged' },
-		{ name : 'file-cache' },
-		{ name : 'file-io' },
-		{ name : 'http-cache' },
-		{ name : 'iis-module-cache' },
-		{ name : 'isapi-filters' },
-		{ name : 'launchProcess' },
-		{ name : 'logging.net' },
-		{ name : 'msmq' },
-		{ name : 'oracle-umanaged' },
-		{ name : 'request-filter' },
-		{ name : 'security.net' },
-		{ name : 'sharepoint' },
-		{ name : 'static-compression' },
-		{ name : 'static-file' },
-		{ name : 'transactions' },
-		{ name : 'wcf-protocols' },
-		{ name : 'wcf-ssl' },
-		{ name : 'windowsAuth' },
-		{ name : 'windowsForms' },
-		{ name : 'windowsPrincipal' },
-		{ name : 'windowsRegistry' },
-		{ name : 'windowsServices' }
-	]
-};
+// rulesets 
 
 const parser = new DOMParser();
 
@@ -242,16 +179,159 @@ function populateRuleSets(ruleSetsInfo) {
 	}
 }
 
+var ruleSetsInfo_cloud_java = {
+	path : 'openshift',
+	ruleSets : [
+		{ name : 'embedded-cache-libraries' },
+		{ name : 'java-rmi' },
+		{ name : 'java-rpc' },
+		{ name : 'jca' },
+		{ name : 'jni-native-code' },
+		{ name : 'local-storage' },
+		{ name : 'logging' },
+		{ name : 'mail' },
+		{ name : 'session' },
+		{ name : 'socket-communication' }
+	]
+};
 
-$('#stack').on('change', function(){
-	if(event.target.value == 'Java') {
+var ruleSetsInfo_cloud_dotnet = {
+	path : 'openshift/dotnet',
+	ruleSets : [
+		{ name : 'console' },
+		{ name : 'database-access' },
+		{ name : 'db2-unmanaged' },
+		{ name : 'file-cache' },
+		{ name : 'file-io' },
+		{ name : 'http-cache' },
+		{ name : 'iis-module-cache' },
+		{ name : 'isapi-filters' },
+		{ name : 'launchProcess' },
+		{ name : 'logging.net' },
+		{ name : 'msmq' },
+		{ name : 'oracle-umanaged' },
+		{ name : 'request-filter' },
+		{ name : 'security.net' },
+		{ name : 'sharepoint' },
+		{ name : 'static-compression' },
+		{ name : 'static-file' },
+		{ name : 'transactions' },
+		{ name : 'wcf-protocols' },
+		{ name : 'wcf-ssl' },
+		{ name : 'windowsAuth' },
+		{ name : 'windowsForms' },
+		{ name : 'windowsPrincipal' },
+		{ name : 'windowsRegistry' },
+		{ name : 'windowsServices' }
+	]
+};
+
+
+var ruleSetsInfo_oss_weblogic = {
+	path : 'eap6/weblogic',
+	ruleSets : [
+		{ name : 'weblogic-catchall' },
+		{ name : 'weblogic-ejb' },
+		{ name : 'weblogic-ignore-references' },
+		{ name : 'weblogic-jms' },
+		{ name : 'weblogic-services' },
+		{ name : 'weblogic-webapp' },
+		{ name : 'weblogic-webservices' },
+		{ name : 'weblogic-xml-descriptors' },
+		{ name : 'weblogic' }
+	]
+};
+
+var ruleSetsInfo_oss_websphere = {
+	path : 'eap6/websphere',
+	ruleSets : [
+		{ name : 'websphere-catchall' },
+		{ name : 'websphere-ignore-references' },
+		{ name : 'websphere-jms' },
+		{ name : 'websphere-mq' },
+		{ name : 'websphere-mqe' },
+		{ name : 'websphere-other' },
+		{ name : 'websphere-xml' }
+	]
+};
+
+// goals
+
+var goals = [
+	{ id : "cloud",		legend : "cloud", 			name : "Cloud Readiness" },
+	{ id : "oss",		legend : "code",			name : "Open Source" },
+	{ id : "modern",	legend : "refresh",			name : "Modernize" },
+	{ id : "upgrade",	legend : "window-restore",	name : "Upgrade" }
+];
+
+populateGoals(goals);
+
+// filter
+
+var stackSelect = createSelect('Stack');
+$('#stack').append(stackSelect);
+var stacks = [ 'Java', '.Net' ];
+populateSelect($('#stack'), stacks);
+
+$('#stack select').on('change', function() {
+	changeStack(event.target.value);
+});
+
+var sourceTechSelect = createSelect('Source Technology');
+$('#sourceTech').append(sourceTechSelect);
+var sourceTechs = [ 'Weblogic', 'WebSphere' ];
+populateSelect($('#sourceTech'), sourceTechs);
+
+$('#sourceTech select').on('change', function() {
+	changeSourceTech(event.target.value);
+});
+
+var targetTechSelect = createSelect('Target Technology');
+$('#targetTech').append(targetTechSelect);
+var targetTechs = [ 'JEE' ];
+populateSelect($('#targetTech'), targetTechs);
+
+$('#targetTech select').on('change', function() {
+	changeTargetTech(event.target.value);
+});
+
+
+// default - rulesets
+
+$('.nav-pf-vertical .list-group .list-group-item:first').addClass('active');
+populateRuleSets(ruleSetsInfo_cloud_java);
+$('#stack select').val('Java');
+
+// filtered - rulesets
+
+function changeGoal(currGoal) {
+	if(currGoal == 'cloud') {
+		
+	} else if(currGoal == 'oss') {
+		
+	}
+}
+
+function changeStack(currStack) {
+	if(currStack == 'Java') {
 		populateRuleSets(ruleSetsInfo_cloud_java);
-	} else if (event.target.value == '.Net') {
+	} else if (currStack == '.Net') {
 		populateRuleSets(ruleSetsInfo_cloud_dotnet);
 	} else {
 		populateRuleSets();
 	}
-});
+}
 
-$('#stack select').val('Java');
-populateRuleSets(ruleSetsInfo_cloud_java);
+function changeSourceTech(currSourceTech) {
+	if(currSourceTech == 'Weblogic') {
+		populateRuleSets(ruleSetsInfo_oss_weblogic);
+	} else if (currSourceTech == 'WebSphere') {
+		populateRuleSets(ruleSetsInfo_oss_websphere);
+	} else {
+		populateRuleSets();
+	}
+}
+
+function changeTargetTech(currTargetTech) {
+	console.log(currTargetTech);
+}
