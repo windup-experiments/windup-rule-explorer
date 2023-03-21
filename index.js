@@ -135,8 +135,8 @@ $('#target-tech').append(dropdown);
 
 const parser = new DOMParser();
 
-var baseUrl = 'https://github.com/windup-experiments/windup-rulesets/blob/master/rules-reviewed/';
-var rawBaseUrl = 'https://raw.githubusercontent.com/windup-experiments/windup-rulesets/master/rules-reviewed/';
+var baseUrl = 'https://github.com/windup-experiments/windup-rulesets/blob/master/rules/rules-reviewed/';
+var rawBaseUrl = 'https://raw.githubusercontent.com/windup-experiments/windup-rulesets/master/rules/rules-reviewed/';
 
 function createRuleset(path, ruleSet) {
 	var itemHeader = $(cloneTemplate('#template-item-header'));
